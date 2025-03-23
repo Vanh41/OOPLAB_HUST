@@ -1,5 +1,5 @@
 public class DigitalVideoDisc {
-    private String title;
+    private final String title;
     private String category;
     private String director;
     private int length;
@@ -29,6 +29,7 @@ public class DigitalVideoDisc {
         this.length = length;
         this.cost = cost;
     }
+
 
     public float getCost() {
         return cost;
