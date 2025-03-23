@@ -39,4 +39,13 @@ public class Cart {
         }
         return total;
     }
+
+    public void display() {
+        for (int i = 0; i < qtyOrdered; i++) {
+            if (itemsOrdered[i] != null) {
+                System.out.println(i + 1 + "  " + itemsOrdered[i].getTitle() + "  " + itemsOrdered[i].getCost());
+            }
+        }
+        System.out.println("Total cost " + totalCost());
+    }
 }
