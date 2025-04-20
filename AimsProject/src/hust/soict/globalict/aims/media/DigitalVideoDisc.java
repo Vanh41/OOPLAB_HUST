@@ -1,14 +1,10 @@
 package hust.soict.globalict.aims.disc;
 
 public class DigitalVideoDisc {
-    private String title;
-    private String category;
     private String director;
     private int length;
-    private float cost;
 
     private static int nbDigitalVideoDiscs = 0;
-    private int id;
 
 
     public DigitalVideoDisc(String title) {
@@ -48,11 +44,6 @@ public class DigitalVideoDisc {
         this.id = nbDigitalVideoDiscs;
     }
 
-
-    public float getCost() {
-        return cost;
-    }
-
     public int getLength() {
         return length;
     }
@@ -61,32 +52,12 @@ public class DigitalVideoDisc {
         return director;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public void setDirector(String director) {
         this.director = director;
     }
 
     public void setLength(int length) {
         this.length = length;
-    }
-
-    public void setCost(float cost) {
-        this.cost = cost;
     }
 
     public String toString() {
