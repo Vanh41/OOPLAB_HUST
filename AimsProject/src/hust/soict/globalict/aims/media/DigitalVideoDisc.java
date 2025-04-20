@@ -1,6 +1,6 @@
-package hust.soict.globalict.aims.disc;
+package hust.soict.globalict.aims.media;
 
-public class DigitalVideoDisc {
+public class DigitalVideoDisc extends Disc implements Playable{
     private String director;
     private int length;
 
@@ -9,39 +9,39 @@ public class DigitalVideoDisc {
 
     public DigitalVideoDisc(String title) {
         super();
-        this.title = title;
+        this.setTitle(title);
         nbDigitalVideoDiscs++;
-        this.id = nbDigitalVideoDiscs;
+        this.setId(nbDigitalVideoDiscs);
     }
 
     public DigitalVideoDisc(String title, String category, float cost) {
         super();
-        this.title = title;
-        this.category = category;
-        this.cost = cost;
+        this.setTitle(title);
+        this.setCategory(category);
+        this.setCost(cost);
         nbDigitalVideoDiscs++;
-        this.id = nbDigitalVideoDiscs;
+        this.setId(nbDigitalVideoDiscs);
     }
 
     public DigitalVideoDisc(String title, String category, String director, float cost) {
         super();
-        this.title = title;
-        this.category = category;
+        this.setTitle(title);
+        this.setCategory(category);
         this.director = director;
-        this.cost = cost;
+        this.setCost(cost);
         nbDigitalVideoDiscs++;
-        this.id = nbDigitalVideoDiscs;
+        this.setId(nbDigitalVideoDiscs);
     }
 
     public DigitalVideoDisc(String title, String category, String director, int length, float cost) {
         super();
-        this.title = title;
-        this.category = category;
+        this.setTitle(title);
+        this.setCategory(category);
         this.director = director;
         this.length = length;
-        this.cost = cost;
+        this.setCost(cost);
         nbDigitalVideoDiscs++;
-        this.id = nbDigitalVideoDiscs;
+        this.setId(nbDigitalVideoDiscs);
     }
 
     public int getLength() {
@@ -62,7 +62,7 @@ public class DigitalVideoDisc {
 
     public String toString() {
         return String.format("%d. DVD - %s - %s - %s - %d: %.2f $",
-                this.id,
+                this.getId(),
                 getTitle(),     // title
                 getCategory(),  // category
                 getDirector(),  // director
@@ -71,10 +71,17 @@ public class DigitalVideoDisc {
     }
 
     public boolean isMatch(int id) {
-        return this.id == id;
+        return this.getId() == id;
     }
 
     public boolean isMatch(String title) {
-        return this.title.equals(title);
+        return this.getTitle().equals(title);
     }
+
+    @Override
+    public void play() {
+        System.out.println("Playing DVD: " + this.getTitle());
+        System.out.println("DVD length: " + this.getLength());
+    }
+
 }
