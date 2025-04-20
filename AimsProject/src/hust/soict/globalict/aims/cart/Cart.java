@@ -1,3 +1,6 @@
+package hust.soict.globalict.aims.cart;
+import hust.soict.globalict.aims.disc.DigitalVideoDisc;
+
 public class Cart {
     public static final int MAX_NUMBER_ORDERED = 20;
     private DigitalVideoDisc[] itemsOrdered = new DigitalVideoDisc[MAX_NUMBER_ORDERED];
@@ -58,5 +61,36 @@ public class Cart {
             }
         }
         System.out.println("Total cost " + totalCost());
+    }
+    public void print() {
+        System.out.println("\n***********************CART***********************");
+        System.out.println("Ordered Items:");
+        for (int i = 0; i < itemsOrdered.length; i++) {
+            if (itemsOrdered[i] != null) {
+                System.out.println(itemsOrdered[i].toString());
+            }
+        }
+        System.out.println("Total cost: " + totalCost());
+        System.out.println("***************************************************");
+    }
+
+    public void search(String title) {
+        for (int i = 0; i < itemsOrdered.length; i++) {
+            if (itemsOrdered[i] != null && itemsOrdered[i].isMatch(title)) {
+                System.out.println(itemsOrdered[i].toString());
+                return;
+            }
+        }
+        System.out.println("No match found");
+    }
+
+    public void search(int id) {
+        for (int i = 0; i < itemsOrdered.length; i++) {
+            if (itemsOrdered[i] != null && itemsOrdered[i].isMatch(id)) {
+                System.out.println(itemsOrdered[i].toString());
+                return;
+            }
+        }
+        System.out.println("No match found");
     }
 }

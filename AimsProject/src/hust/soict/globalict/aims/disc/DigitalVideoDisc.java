@@ -1,3 +1,5 @@
+package hust.soict.globalict.aims.disc;
+
 public class DigitalVideoDisc {
     private String title;
     private String category;
@@ -85,5 +87,23 @@ public class DigitalVideoDisc {
 
     public void setCost(float cost) {
         this.cost = cost;
+    }
+
+    public String toString() {
+        return String.format("%d. DVD - %s - %s - %s - %d: %.2f $",
+                this.id,
+                getTitle(),     // title
+                getCategory(),  // category
+                getDirector(),  // director
+                getLength(),    // length
+                getCost());     // cost
+    }
+
+    public boolean isMatch(int id) {
+        return this.id == id;
+    }
+
+    public boolean isMatch(String title) {
+        return this.title.equals(title);
     }
 }
