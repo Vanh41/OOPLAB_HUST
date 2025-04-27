@@ -6,6 +6,12 @@ import java.util.List;
 public class Book extends Media{
     private List<String> authors = new ArrayList<String>();
 
+    public Book(String title, String category, float cost) {
+        super(title, category, cost);
+        this.authors = authors;
+    }
+    
+
     public void addAuthor(String author) {
         if (!authors.contains(author)) {
             authors.add(author);
@@ -25,5 +31,10 @@ public class Book extends Media{
             }
         }
         System.out.println("Author " + author + " does not exist in book ");
+    }
+
+    @Override
+    public String toString() {
+        return "Book - Title: " + getTitle() + ", Cost: " + getCost();
     }
 }

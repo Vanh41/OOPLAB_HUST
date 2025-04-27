@@ -60,15 +60,15 @@ public class DigitalVideoDisc extends Disc implements Playable{
         this.length = length;
     }
 
-    public String toString() {
-        return String.format("%d. DVD - %s - %s - %s - %d: %.2f $",
-                this.getId(),
-                getTitle(),     // title
-                getCategory(),  // category
-                getDirector(),  // director
-                getLength(),    // length
-                getCost());     // cost
-    }
+//    public String toString() {
+//        return String.format("%d. DVD - %s - %s - %s - %d: %.2f $",
+//                this.getId(),
+//                getTitle(),     // title
+//                getCategory(),  // category
+//                getDirector(),  // director
+//                getLength(),    // length
+//                getCost());     // cost
+//    }
 
     public boolean isMatch(int id) {
         return this.getId() == id;
@@ -82,6 +82,11 @@ public class DigitalVideoDisc extends Disc implements Playable{
     public void play() {
         System.out.println("Playing DVD: " + this.getTitle());
         System.out.println("DVD length: " + this.getLength());
+    }
+
+    @Override
+    public String toString() {
+        return "DVD - Title: " + getTitle() + ", Cost: " + getCost();
     }
 
 }

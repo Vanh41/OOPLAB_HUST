@@ -21,4 +21,13 @@ public class Track {
         System.out.println("Playing track: " + this.getTitle());
         System.out.println("Track length: " + this.getLength());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Track track = (Track) obj;
+        return this.length == track.getLength() &&
+                this.title != null && this.title.equals(track.getTitle());
+    }
 }

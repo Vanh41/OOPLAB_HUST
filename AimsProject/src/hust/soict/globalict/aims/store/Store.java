@@ -1,36 +1,40 @@
 package hust.soict.globalict.aims.store;
 
 import hust.soict.globalict.aims.media.DigitalVideoDisc;
+import hust.soict.globalict.aims.media.Media;
+
+import java.util.ArrayList;
 
 public class Store {
-    private DigitalVideoDisc[]itemInStore = new DigitalVideoDisc[10000];
-    private int qtyInStore = 0;
+    private ArrayList<Media> itemInStore = new ArrayList<>();
 
-    public void addDVD(DigitalVideoDisc dvd){
-        for (int i = 0; i < qtyInStore; i++) {
-            if (itemInStore[i].getTitle().equals(dvd.getTitle())) {
-                return;
-            }
+    public void addMedia(Media media) {
+        if (!itemInStore.contains(media)) {
+            itemInStore.add(media);
+            System.out.println("Media added to store");
         }
-        itemInStore[qtyInStore] = dvd;
-        System.out.println("DVD added to store");
-        qtyInStore++;
     }
 
-    public void removeDVD(DigitalVideoDisc dvd){
-        boolean found = false;
-        for (int i = 0; i < qtyInStore; i++) {
-            if (itemInStore[i].getTitle().equals(dvd.getTitle())) {
-                found = true;
-                for (int j = i; j < qtyInStore - 1; j++) {
-                    itemInStore[j] = itemInStore[j + 1];
-                }
-                itemInStore[qtyInStore - 1] = null;
-                qtyInStore--;
-                System.out.println("DVD removed from store");
-                return;
+    public Media searchMedia(String title) {
+        for (Media media : itemInStore) {
+            if (media.getTitle().equals(title)) {
+                return media;
             }
         }
-        System.out.println("DVD not found in store");
+        return null;
     }
+
+
+    public void removeMedia(Media media) {
+        if (itemInStore.remove(media)) {
+            System.out.println("Media removed from store");
+        } else {
+            System.out.println("Media not found in store");
+        }
+    }
+
+    public ArrayList<Media> getItemsInStore(){
+        return itemInStore;
+    }
+
 }
