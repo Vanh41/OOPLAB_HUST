@@ -1,25 +1,23 @@
 package hust.soict.globalict.aims.cart;
 
 import hust.soict.globalict.aims.media.Media;
-import hust.soict.globalict.aims.media.MediaComparatorByCostTitle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.Collections;
-import java.util.ArrayList;
 
 public class Cart {
     private static final int MAX_NUMBER_ORDERED = 20;
-    private final ArrayList<Media> itemsOrdered = new ArrayList<>();
+    private final ObservableList<Media> itemsOrdered = FXCollections.observableArrayList();
 
     public void addMedia(Media media) {
         if (media == null) {
-            System.out.println("No media found");
-            return;
+            throw new IllegalArgumentException("Cannot add null media to the cart.");
         }
-        if (itemsOrdered.size() < MAX_NUMBER_ORDERED) {
-            itemsOrdered.add(media);
-            System.out.println("The disc has been added");
-        } else {
-            System.out.println("The cart is almost full");
+        if (itemsOrdered.size() >= MAX_NUMBER_ORDERED) {
+            throw new IllegalStateException("Cannot add media. Cart is full.");
         }
+        itemsOrdered.add(media);
     }
 
     public void addMedia(Media[] media) {
@@ -31,6 +29,17 @@ public class Cart {
     public void addMedia(Media media1, Media media2) {
         addMedia(media1);
         addMedia(media2);
+    }
+
+    public Media searchMedia(String title){
+        for(Media media:itemsOrdered){
+            if(media.getTitle().equals(title)){
+                System.out.println(media);
+                return media;
+            }
+        }
+        System.out.println("No match found");
+        return null;
     }
 
     public void removeMedia(Media disc) {
@@ -100,11 +109,19 @@ public class Cart {
         System.out.println("No match found");
     }
 
+    public ObservableList<Media> getItemsOrdered(){
+        return itemsOrdered;
+    }
+
     public void sortByCost(){
         Collections.sort(itemsOrdered, Media.COMPARE_BY_COST_TITLE);
     }
 
     public void sortByTitle(){
         Collections.sort(itemsOrdered, Media.COMPARE_BY_TITLE_COST);
+    }
+
+    public void clear(){
+        itemsOrdered.clear();
     }
 }

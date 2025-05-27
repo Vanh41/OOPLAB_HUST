@@ -1,18 +1,17 @@
 package hust.soict.globalict.aims;
-import hust.soict.globalict.aims.cart.Cart;
-import hust.soict.globalict.aims.media.Book;
-import hust.soict.globalict.aims.media.CompactDisc;
-import hust.soict.globalict.aims.media.DigitalVideoDisc;
-import hust.soict.globalict.aims.media.Media;
-import hust.soict.globalict.aims.store.Store;
 
+import javax.swing.JOptionPane;
 import java.util.Scanner;
+import hust.soict.globalict.aims.exception.PlayerException;
+import hust.soict.globalict.aims.media.*;
+import hust.soict.globalict.aims.store.Store;
+import hust.soict.globalict.aims.cart.Cart;
 
 public class Aims {
+
     static Scanner scanner = new Scanner(System.in);
     static Store store = new Store();
     static Cart cart = new Cart();
-
 
     public static void showMenu() {
         while (true) {
@@ -43,12 +42,11 @@ public class Aims {
         }
     }
 
-
     public static void storeMenu() {
         while (true) {
             System.out.println("Options: ");
             System.out.println("--------------------------------");
-            System.out.println("1. See a media’s details");
+            System.out.println("1. See a media's details");
             System.out.println("2. Add a media to cart");
             System.out.println("3. Play a media");
             System.out.println("4. See current cart");
@@ -57,7 +55,6 @@ public class Aims {
             System.out.println("Please choose a number: 0-1-2-3-4");
             switch (scanner.nextInt()) {
                 case 1:
-//                    seeMediaDetails();
                     mediaDetailsMenu();
                     break;
                 case 2:
@@ -103,9 +100,34 @@ public class Aims {
                     if (type == 1) {
                         media = new Book(title, category, cost);
                     } else if (type == 2) {
-                        media = new DigitalVideoDisc(title, "Category", "Director", 120, cost);
+                        System.out.println("Enter director:");
+                        scanner.nextLine();
+                        String director = scanner.nextLine();
+                        System.out.println("Enter length:");
+                        int length = scanner.nextInt();
+                        media = new DigitalVideoDisc(title, category, director, length, cost);
+                        try {
+                            ((DigitalVideoDisc) media).play();
+                        } catch (PlayerException e) {
+                            JOptionPane.showMessageDialog(null,
+                                    e.getMessage(),
+                                    "Illegal DVD Length",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
                     } else if (type == 3) {
-                        media = new CompactDisc(title, category, cost);
+                        System.out.println("Enter artist:");
+                        scanner.nextLine();
+                        String artist = scanner.nextLine();
+                        CompactDisc cd = new CompactDisc(title, category, cost);
+                        cd.setArtist(artist);
+
+                        System.out.println("Do you want to add tracks? (y/n)");
+                        String choice = scanner.next();
+                        if (choice.equalsIgnoreCase("y")) {
+                            addTracksToCD(cd);
+                        }
+
+                        media = cd;
                     }
 
                     if (media != null) {
@@ -134,6 +156,24 @@ public class Aims {
         }
     }
 
+    private static void addTracksToCD(CompactDisc cd) {
+        while (true) {
+            System.out.println("Enter track title (or 'exit' to finish):");
+            scanner.nextLine(); // Clear buffer
+            String trackTitle = scanner.nextLine();
+
+            if (trackTitle.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            System.out.println("Enter track length :");
+            int trackLength = scanner.nextInt();
+
+            Track track = new Track(trackTitle, trackLength);
+            cd.addTrack(track);
+            System.out.println("Track added!");
+        }
+    }
 
     public static void seeMediaDetails() {
         System.out.println("Enter media title:");
@@ -149,33 +189,61 @@ public class Aims {
     public static void addMedia() {
         System.out.println("Enter media title:");
         String title = scanner.next();
-        cart.addMedia(store.searchMedia(title));
+        Media media = store.searchMedia(title);
+        if (media != null) {
+            cart.addMedia(media);
+            System.out.println("Added " + media.getTitle() + " to cart.");
+        } else {
+            System.out.println("Media not found!");
+        }
     }
 
     public static void playMedia() {
         System.out.println("Enter media title:");
         String title = scanner.next();
         Media media = store.searchMedia(title);
+
         if (media == null) {
-            System.out.println("No media found");
+            System.out.println("No media found with the given title.");
             return;
         }
-        if (media.getClass() == DigitalVideoDisc.class) {
-            DigitalVideoDisc dvd = (DigitalVideoDisc) media;
-            System.out.println("Playing " + dvd.getTitle());
-            dvd.play();
-        }
-        if (media.getClass() == CompactDisc.class) {
-            CompactDisc cd = (CompactDisc) media;
-            System.out.println("Playing " + cd.getTitle());
-            cd.play();
-        }
-        if (media.getClass() == Book.class) {
-            System.out.println("Not playable");
+
+        try {
+            if (media instanceof Playable) {
+                Playable playable = (Playable) media;
+                if (media instanceof DigitalVideoDisc) {
+                    System.out.println("Playing DVD: " + media.getTitle());
+                } else if (media instanceof CompactDisc) {
+                    System.out.println("Playing CD: " + media.getTitle());
+                }
+                playable.play();
+            } else {
+                System.out.println("This media type is not playable.");
+            }
+        } catch (PlayerException e) {
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("Exception toString: " + e.toString());
+            System.err.println("Stack trace:");
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                "Error: " + e.getMessage(),
+                "PlayerException",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public static void mediaDetailsMenu() {
+        System.out.println("Enter media title:");
+        String title = scanner.next();
+        Media media = store.searchMedia(title);
+
+        if (media == null) {
+            System.out.println("No media found with that title!");
+            return;
+        }
+
+        System.out.println(media);
+
         while (true) {
             System.out.println("Options: ");
             System.out.println("--------------------------------");
@@ -186,10 +254,27 @@ public class Aims {
             System.out.println("Please choose a number: 0-1-2");
             switch (scanner.nextInt()) {
                 case 1:
-                    addMedia();
+                    cart.addMedia(media);
+                    System.out.println("Added " + media.getTitle() + " to cart.");
                     break;
                 case 2:
-                    playMedia();
+                    if (media instanceof Playable) {
+                        try {
+                            ((Playable) media).play();
+                        } catch (PlayerException e) {
+                            System.err.println("Error: " + e.getMessage());
+                            System.err.println("Exception toString: " + e.toString());
+                            System.err.println("Stack trace:");
+                            e.printStackTrace();
+
+                            JOptionPane.showMessageDialog(null,
+                                "Error: " + e.getMessage(),
+                                "PlayerException",
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        System.out.println("This media is not playable!");
+                    }
                     break;
                 case 0:
                     return;
@@ -224,7 +309,7 @@ public class Aims {
                     removeMedia();
                     break;
                 case 4:
-                    playMedia();
+                    playMediaFromCart();
                     break;
                 case 5:
                     placeOrder();
@@ -268,7 +353,42 @@ public class Aims {
     private static void removeMedia() {
         System.out.println("Enter media title to remove:");
         String title = scanner.next();
-        cart.removeMedia(store.searchMedia(title));
+        Media media = cart.searchMedia(title);
+        if (media != null) {
+            cart.removeMedia(media);
+            System.out.println("Removed " + media.getTitle() + " from cart.");
+        } else {
+            System.out.println("Media not found in cart!");
+        }
+    }
+
+    private static void playMediaFromCart() {
+        System.out.println("Enter media title to play:");
+        String title = scanner.next();
+        Media media = cart.searchMedia(title);
+
+        if (media == null) {
+            System.out.println("No media found in cart with the given title.");
+            return;
+        }
+
+        try {
+            if (media instanceof Playable) {
+                Playable playable = (Playable) media;
+                playable.play();
+            } else {
+                System.out.println("This media type is not playable.");
+            }
+        } catch (PlayerException e) {
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("Exception toString: " + e.toString());
+            System.err.println("Stack trace:");
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                "Error: " + e.getMessage(),
+                "PlayerException",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void placeOrder() {
@@ -277,9 +397,33 @@ public class Aims {
     }
 
     public static void main(String[] args) {
-        while (true) {
+        DigitalVideoDisc dvd1 = new DigitalVideoDisc("The Lion King", "Animation", "Roger Allers", 87, 19.95f);
+        DigitalVideoDisc dvd2 = new DigitalVideoDisc("Star Wars", "Science Fiction", "George Lucas", -120, 24.95f); // Negative length to trigger exception
+
+        CompactDisc cd1 = new CompactDisc("Greatest Hits", "Music", 15.95f);
+        cd1.setArtist("Various Artists");
+        cd1.addTrack(new Track("Song 1", 180));
+        cd1.addTrack(new Track("Song 2", -30));
+
+        Book book1 = new Book("Harry Potter", "Fantasy", 29.95f);
+
+        store.addMedia(dvd1);
+        store.addMedia(dvd2);
+        store.addMedia(cd1);
+        store.addMedia(book1);
+
+
+        try {
             showMenu();
-            return;
+        } catch (Exception e) {
+            System.err.println("Application terminated unexpectedly: " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                "Application error: " + e.getMessage(),
+                "Unexpected Error",
+                JOptionPane.ERROR_MESSAGE);
+        } finally {
+            scanner.close();
         }
     }
 }
